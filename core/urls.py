@@ -14,9 +14,15 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+# core/urls.py
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/auth/', include('core.accounts.urls')),
+    path('api/food/', include('core.food.urls')),
+    path('api/workouts/', include('core.workouts.urls')),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

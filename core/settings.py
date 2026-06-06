@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,18 +29,27 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-# Application definition
-
+# In INSTALLED_APPS, add:
 INSTALLED_APPS = [
+    'jazzmin',  
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Third party apps
+    'rest_framework',
+    'corsheaders',
+    # Our apps
+    'core.accounts',
+    'core.food',
+    'core.workouts',
 ]
 
+# Add CorsMiddleware at the top of MIDDLEWARE (before CommonMiddleware)
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',   # add this
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -48,6 +58,23 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+# Allow React to access this backend (during development)
+CORS_ALLOW_ALL_ORIGINS = True   # For production, restrict to your React domain
+
+# DRF settings: use JWT authentication
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',   # By default, all endpoints require login
+    ),
+}
+# JWT settings (optional but nice)
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+}
 
 ROOT_URLCONF = 'core.urls'
 
@@ -97,7 +124,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
+AUTH_USER_MODEL = 'accounts.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
