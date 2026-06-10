@@ -1,3 +1,10 @@
 from django.contrib import admin
+from .models import FoodEntry
 
-# Register your models here.
+
+@admin.register(FoodEntry)
+class FoodEntryAdmin(admin.ModelAdmin):
+	list_display = ('user', 'food_name', 'calories', 'date', 'created_at')
+	list_filter = ('date', 'user')
+	search_fields = ('food_name', 'user__username')
+	ordering = ('-date', '-created_at')
