@@ -5,7 +5,7 @@ from .models import FoodEntry
 class FoodEntrySerializer(serializers.ModelSerializer):
     class Meta:
         model = FoodEntry
-        fields = ['id', 'user', 'food_name', 'calories', 'protein', 'carbs', 'fat', 'date', 'created_at']
+        fields = ['id', 'user', 'food_name', 'calories', 'protein', 'carbs', 'fat', 'meal_type', 'date', 'time', 'created_at']
         read_only_fields = ['id', 'user', 'created_at']
     
     def create(self, validated_data):

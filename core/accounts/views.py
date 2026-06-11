@@ -1,11 +1,19 @@
 # accounts/views.py
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
-from .serializers import RegisterSerializer, UserSerializer, ProfileUpdateSerializer
-from .models import User
+from .serializers import (
+    RegisterSerializer,
+    UserSerializer,
+    ProfileUpdateSerializer,
+    WeightEntrySerializer,
+    GoalSerializer,
+    MilestoneSerializer,
+    DailyLogSerializer,
+)
+from .models import User, WeightEntry, Goal, Milestone, DailyLog
 from django.utils import timezone
 from datetime import date
 
@@ -88,3 +96,39 @@ class DashboardStatsView(APIView):
             'weekly_food_calories': weekly_food_calories,
         }
         return Response(data)
+
+
+# Simple viewsets for the account-related models so they appear in the API browsable/dashboard
+class _BaseUserModelViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # only return objects for the authenticated user
+        return self.model.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class WeightEntryViewSet(_BaseUserModelViewSet):
+    model = WeightEntry
+    queryset = WeightEntry.objects.all()
+    serializer_class = WeightEntrySerializer
+
+
+class GoalViewSet(_BaseUserModelViewSet):
+    model = Goal
+    queryset = Goal.objects.all()
+    serializer_class = GoalSerializer
+
+
+class MilestoneViewSet(_BaseUserModelViewSet):
+    model = Milestone
+    queryset = Milestone.objects.all()
+    serializer_class = MilestoneSerializer
+
+
+class DailyLogViewSet(_BaseUserModelViewSet):
+    model = DailyLog
+    queryset = DailyLog.objects.all()
+    serializer_class = DailyLogSerializer
