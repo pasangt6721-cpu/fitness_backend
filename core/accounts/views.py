@@ -61,7 +61,12 @@ class DashboardStatsView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request):
-        today = date.today()
+        selected_date = request.query_params.get('date')
+        try:
+            today = date.fromisoformat(selected_date) if selected_date else date.today()
+        except ValueError:
+            today = date.today()
+
         user = request.user
         
         # Food entries today
@@ -115,6 +120,13 @@ class WeightEntryViewSet(_BaseUserModelViewSet):
     queryset = WeightEntry.objects.all()
     serializer_class = WeightEntrySerializer
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        entry_date = self.request.query_params.get('date')
+        if entry_date:
+            qs = qs.filter(date=entry_date)
+        return qs
+
 
 class GoalViewSet(_BaseUserModelViewSet):
     model = Goal
@@ -132,3 +144,10 @@ class DailyLogViewSet(_BaseUserModelViewSet):
     model = DailyLog
     queryset = DailyLog.objects.all()
     serializer_class = DailyLogSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        entry_date = self.request.query_params.get('date')
+        if entry_date:
+            qs = qs.filter(date=entry_date)
+        return qs

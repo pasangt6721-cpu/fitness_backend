@@ -46,7 +46,7 @@ class WorkoutPlanSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkoutPlan
         fields = ['id', 'user', 'title', 'description', 'difficulty', 'is_public', 'created_at', 'exercises']
-        read_only_fields = ['id', 'created_at']
+        read_only_fields = ['id', 'user', 'created_at']
 
 
 class WorkoutGoalSerializer(serializers.ModelSerializer):
@@ -55,4 +55,4 @@ class WorkoutGoalSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkoutGoal
         fields = ['id', 'user', 'title', 'description', 'target_value', 'current_value', 'unit', 'period_days', 'status', 'target_date', 'achieved_date', 'created_at', 'progress_percentage']
-        read_only_fields = ['id', 'created_at', 'progress_percentage']
+        read_only_fields = ['id', 'user', 'created_at', 'progress_percentage']

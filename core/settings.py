@@ -47,9 +47,8 @@ INSTALLED_APPS = [
     'core.workouts',
 ]
 
-# Add CorsMiddleware at the top of MIDDLEWARE (before CommonMiddleware)
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',   # add this
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -57,6 +56,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+# Add CorsMiddleware at the top of MIDDLEWARE (before CommonMiddleware)
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",   # React dev server (Vite)
+    "http://localhost:3000",   # React default
 ]
 # Allow React to access this backend (during development)
 CORS_ALLOW_ALL_ORIGINS = True   # For production, restrict to your React domain

@@ -22,7 +22,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 class ProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'bio', 'profile_picture', 'current_weight_kg']
+        fields = ['id', 'username', 'email', 'bio', 'profile_picture', 'current_weight_kg', 'date_joined']
         read_only_fields = ['id']
 
 class UserSerializer(serializers.ModelSerializer):
@@ -37,7 +37,7 @@ class WeightEntrySerializer(serializers.ModelSerializer):
     class Meta:
         model = WeightEntry
         fields = ['id', 'user', 'weight_kg', 'date', 'note']
-        read_only_fields = ['id']
+        read_only_fields = ['id', 'user']
 
 
 class GoalSerializer(serializers.ModelSerializer):
@@ -45,18 +45,18 @@ class GoalSerializer(serializers.ModelSerializer):
         model = Goal
         fields = ['id', 'user', 'title', 'description', 'target_value', 'target_unit',
                   'current_value', 'target_date', 'status', 'achieved_date', 'created_at']
-        read_only_fields = ['id', 'created_at']
+        read_only_fields = ['id', 'user', 'created_at']
 
 
 class MilestoneSerializer(serializers.ModelSerializer):
     class Meta:
         model = Milestone
         fields = ['id', 'user', 'goal', 'title', 'achieved', 'achieved_date']
-        read_only_fields = ['id']
+        read_only_fields = ['id', 'user']
 
 
 class DailyLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = DailyLog
         fields = ['id', 'user', 'date', 'workouts_count', 'water_liters', 'calories']
-        read_only_fields = ['id']
+        read_only_fields = ['id', 'user']

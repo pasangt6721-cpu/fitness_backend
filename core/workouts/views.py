@@ -1,5 +1,7 @@
 # workouts/views.py
 from rest_framework import viewsets, permissions
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from .models import (
     WorkoutEntry,
     ScheduledWorkout,
@@ -33,11 +35,30 @@ class WorkoutEntryViewSet(_UserScopedModelViewSet):
     queryset = WorkoutEntry.objects.all()
     serializer_class = WorkoutEntrySerializer
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        entry_date = self.request.query_params.get('date')
+        if entry_date:
+            qs = qs.filter(date=entry_date)
+        return qs
+
+    @action(detail=False, methods=['get'])
+    def streak(self, request):
+        streak_val = WorkoutEntry.current_streak(request.user)
+        return Response({'streak': streak_val})
+
 
 class ScheduledWorkoutViewSet(_UserScopedModelViewSet):
     model = ScheduledWorkout
     queryset = ScheduledWorkout.objects.all()
     serializer_class = ScheduledWorkoutSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        selected_date = self.request.query_params.get('date')
+        if selected_date:
+            qs = qs.filter(scheduled_date__gte=selected_date)
+        return qs
 
 
 class ExerciseViewSet(viewsets.ModelViewSet):
